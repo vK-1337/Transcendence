@@ -1,2 +1,33 @@
 services:
+  django:
+    build: ./srcs/django
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgres://admin:admin_password@postgres:5432/ma_base_de_donnees
+    depends_on:
+      - postgres
+    volumes:
+      - ./srcs/django/project:/app
+    networks:
+      - transcendence
 
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin_password
+      POSTGRES_DB: ma_base_de_donnees
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - transcendence
+
+volumes:
+  postgres_data:
+
+networks:
+  transcendence:
